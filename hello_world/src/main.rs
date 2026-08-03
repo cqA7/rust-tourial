@@ -1,4 +1,4 @@
-fn _greet_world() {
+fn greet_world() {
     let penguin_data = "\
         common name,length (cm)
         Little penguin,33
@@ -37,7 +37,7 @@ fn _greet_world() {
     }
 }
 
-fn _variable() {
+fn variable() {
     let (a, mut b): (bool, bool) = (true, false);
     println!("a = {}, b = {}", a, b);
     b = true;
@@ -52,7 +52,7 @@ fn _variable() {
     println!("a value is        {:08b}", a);
 }
 
-fn _char_bool() {
+fn char_bool() {
     let x = '中';
     println!("字符'中'占用了{}字节的内存大小", size_of_val(&x));
 }
@@ -68,15 +68,21 @@ fn statement_expression(x: i32) -> i32 {
 }
 
 fn add(x: i32, y: i32) -> i32 {
-    x + y
+    x + y // 没有分号，表示这是一个表达式，返回值是 x + y 的结果
+}
+
+fn plus_or_minus(x: i32) -> i32 {
+    if x > 5 { x - 5 } else { x + 5 }
 }
 
 fn main() {
-    // greet_world();
-    // variable();
-    // char_bool();
+    greet_world();
+    variable();
+    char_bool();
     let y = statement_expression(10);
     println!("y = {}", y);
     let sum = add(10, 4);
     println!("sum is {}", sum);
+    let res = plus_or_minus(10);
+    println!("plus_or_minus(10) = {}", res);
 }
