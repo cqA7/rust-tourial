@@ -50,3 +50,27 @@ Rust 在语言级别，只有一种字符串类型： str，它通常是以引�
 **str 类型是硬编码进可执行文件，也无法被修改，但是 String 则是一个可增长、可改变且具有所有权的 UTF-8 编码字符串，当 Rust 用户提到字符串时，往往指的就是 String 类型和 &str 字符串切片类型，这两个类型都是 UTF-8 编码。**
 
 ## String 和 &str 的转换
+
+&str to String:
+
+```rust
+String::from("hello")
+"hello".to_string()
+```
+
+String to &str:
+
+取引用即可，比如
+
+```rust
+fn main() {
+    let s = String::from("hello,world!");
+    say_hello(&s);
+    say_hello(&s[..]);
+    say_hello(s.as_str());
+}
+
+fn say_hello(s: &str) {
+    println!("{}",s);
+}
+```
