@@ -1,3 +1,5 @@
+> 参考文档： https://beatai.org/rust-course/basic/compound-type/string-slice
+
 ## 切片
 
 对于字符串而言，切片就是对 String 类型中某一部分的引用，它看起来像这样：
