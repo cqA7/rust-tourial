@@ -1,8 +1,16 @@
+mod slice;
+
+use slice::str_slice;
+use std::mem::size_of_val;
+
 fn main() {
+    let string = String::from("hello, rust");
+    let str = str_slice(&string);
+    println!("str is {}", str);
     let mut string_remove = String::from("测试remove方法");
     println!(
         "string_remove 占 {} 个字节",
-        std::mem::size_of_val(string_remove.as_str())
+        size_of_val(string_remove.as_str())
     );
     string_remove.remove(0);
     println!("{}", string_remove);
