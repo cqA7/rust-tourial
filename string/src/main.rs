@@ -1,5 +1,7 @@
+mod operate;
 mod slice;
 
+use operate::*;
 use slice::*;
 use std::mem::size_of_val;
 
@@ -22,6 +24,13 @@ fn main() {
     );
     string_remove.remove(0);
     println!("{}", string_remove);
+
+    let mut s_push_test = String::from("hello");
+    push(&mut s_push_test, ", rust");
+    println!("测试push方法 -> {}", s_push_test);
+
+    insert(&mut s_push_test, 2, ", rust");
+    println!("测试insert方法 -> {}", s_push_test);
 
     let string_append = String::from("hello ");
     let string_rust = String::from("rust");
