@@ -29,8 +29,17 @@ fn main() {
     push(&mut s_push_test, ", rust");
     println!("测试push方法 -> {}", s_push_test);
 
-    insert(&mut s_push_test, 2, ", rust");
+    insert(&mut s_push_test, 5, ", rust");
     println!("测试insert方法 -> {}", s_push_test);
+
+    let from = "rust";
+    let to = "RUST";
+    replace(&mut s_push_test, from, to);
+    println!("String 测试replace方法 -> {}", s_push_test);
+
+    let replace_str_test = "hello, rust";
+    let res = replace_str(replace_str_test, from, to);
+    println!("&str 测试replace方法 -> {}", res);
 
     let string_append = String::from("hello ");
     let string_rust = String::from("rust");

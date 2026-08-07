@@ -106,3 +106,21 @@ fn main() {
     println!("插入字符串 insert_str() -> {}", s);
 }
 ```
+
+## 替换 (Replace)
+
+如果想要把字符串中的某个字符串替换成其它的字符串，那可以使用 replace() 方法。与替换有关的方法有三个。
+
+#### 1、replace
+
+该方法可适用于 String 和 &str 类型。replace() 方法接收两个参数，第一个参数是要被替换的字符串，第二个参数是新的字符串。该方法会替换所有匹配到的字符串。该方法是返回一个新的字符串(String)，而不是操作原来的字符串。
+
+示例代码如下：
+
+```rust
+fn main() {
+    let string_replace = String::from("I like rust. Learning rust is my favorite!");
+    let new_string_replace = string_replace.replace("rust", "RUST");
+    dbg!(new_string_replace);
+}
+```
