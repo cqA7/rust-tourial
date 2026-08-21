@@ -1,8 +1,8 @@
 mod operate;
 mod slice;
 
-use operate::*;
-use slice::*;
+use operate::{insert, push, replace, replace_range, replace_str, replacen, replacen_str};
+use slice::{str_2_string, str_slice, string_2_str};
 use std::mem::size_of_val;
 
 fn main() {
