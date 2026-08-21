@@ -1,7 +1,7 @@
 mod operate;
 mod slice;
 
-use operate::{insert, push, replace, replace_range, replace_str, replacen, replacen_str};
+use operate::{insert, pop, push, replace, replace_range, replace_str, replacen, replacen_str};
 use slice::{str_2_string, str_slice, string_2_str};
 use std::mem::size_of_val;
 
@@ -57,9 +57,27 @@ fn main() {
     println!("&str 测试 replacen 方法 -> {}", replacen_str_res);
 
     println!("=============replace_range==============");
+
     let mut string_range_test = String::from("hi, I like rust");
     replace_range(&mut string_range_test, 6..=9, "test");
     println!("String 测试 replace_range 方法 -> {}", string_range_test);
+
+    println!("=============pop==============");
+    let mut string_pop_test = String::from("u");
+    if let Some(char_pop) = pop(&mut string_pop_test) {
+        println!("pop removed char is {}", char_pop);
+    } else {
+        println!("no char return");
+    }
+
+    match pop(&mut string_pop_test) {
+        Some(char_pop) => {
+            println!("pop removed char is {}", char_pop);
+        }
+        None => {
+            println!("no char return");
+        }
+    }
 
     println!("===========================");
 

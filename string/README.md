@@ -148,3 +148,10 @@ fn main() {
     dbg!(string_replace_range);
 }
 ```
+
+### 删除 (Delete)
+
+与字符串删除相关的方法有 4 个，它们分别是 `pop()`，`remove()`，`truncate()`，`clear()`。这四个方法仅适用于 `String` 类型。
+
+#### 1、pop
+

@@ -29,3 +29,7 @@ pub fn replacen_str(s: &str, from: &str, to: &str, n: usize) -> String {
 pub fn replace_range<R: RangeBounds<usize>>(s: &mut String, range: R, to: &str) {
     s.replace_range(range, to);
 }
+
+pub fn pop(s: &mut String) -> Option<char> {
+    s.pop()
+}
