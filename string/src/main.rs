@@ -25,21 +25,43 @@ fn main() {
     string_remove.remove(0);
     println!("{}", string_remove);
 
+    println!("=============push & push_str==============");
+
     let mut s_push_test = String::from("hello");
     push(&mut s_push_test, ", rust");
     println!("测试push方法 -> {}", s_push_test);
 
+    println!("=============insert==============");
+
     insert(&mut s_push_test, 5, ", rust");
     println!("测试insert方法 -> {}", s_push_test);
 
+    println!("=============replace==============");
+
     let from = "rust";
     let to = "RUST";
-    replace(&mut s_push_test, from, to);
-    println!("String 测试replace方法 -> {}", s_push_test);
+    let r = replace(s_push_test, from, to);
+    println!("String 测试replace方法 -> {}", r);
 
     let replace_str_test = "hello, rust";
     let res = replace_str(replace_str_test, from, to);
     println!("&str 测试replace方法 -> {}", res);
+
+    println!("=============replacen==============");
+
+    let replacen_res = replacen(r, to, from, 1);
+    println!("String 测试 replacen 方法 -> {}", replacen_res);
+
+    let replacen_str_test = "hello, rust, rust, rust";
+    let replacen_str_res = replacen_str(&replacen_str_test, from, to, 2);
+    println!("&str 测试 replacen 方法 -> {}", replacen_str_res);
+
+    println!("=============replace_range==============");
+    let mut string_range_test = String::from("hi, I like rust");
+    replace_range(&mut string_range_test, 6..=9, "test");
+    println!("String 测试 replace_range 方法 -> {}", string_range_test);
+
+    println!("===========================");
 
     let string_append = String::from("hello ");
     let string_rust = String::from("rust");

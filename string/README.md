@@ -79,7 +79,7 @@ fn say_hello(s: &str) {
 
 ### 追加 (Push)
 
-在字符串尾部可以使用 push() 方法追加字符 char，也可以使用 push_str() 方法追加字符串字面量。这两个方法都是在原有的字符串上追加，并不会返回新的字符串。由于字符串追加操作要修改原来的字符串，则该字符串必须是可变的，即字符串变量必须由 mut 关键字修饰。
+在字符串尾部可以使用 push() 方法追加字符 char，也可以使用 push_str() 方法追加字符串字面量。**这两个方法都是在原有的字符串上追加**，并不会返回新的字符串。由于字符串追加操作要修改原来的字符串，则该字符串**必须是可变**的，即字符串变量必须由 mut 关键字修饰。
 
 ```rust
 fn main() {
@@ -95,7 +95,7 @@ fn main() {
 
 ### 插入 (Insert)
 
-可以使用 insert() 方法插入单个字符 char，也可以使用 insert_str() 方法插入字符串字面量，与 push() 方法不同，这俩方法需要传入两个参数，第一个参数是字符（串）插入位置的索引，第二个参数是要插入的字符（串），索引从 0 开始计数，如果越界则会发生错误。由于字符串插入操作要修改原来的字符串，则该字符串必须是可变的，即字符串变量必须由 mut 关键字修饰。
+可以使用 insert() 方法插入单个字符 char，也可以使用 insert_str() 方法插入字符串字面量，与 push() 方法不同，这俩方法需要传入两个参数，第一个参数是字符（串）插入位置的索引，第二个参数是要插入的字符（串），索引从 0 开始计数，如果越界则会发生错误。由于**字符串插入操作要修改原来的字符串**，则该字符串**必须是可变**的，即字符串变量必须由 mut 关键字修饰。
 
 ```rust
 fn main() {
@@ -113,7 +113,7 @@ fn main() {
 
 #### 1、replace
 
-该方法可适用于 String 和 &str 类型。replace() 方法接收两个参数，第一个参数是要被替换的字符串，第二个参数是新的字符串。该方法会替换所有匹配到的字符串。该方法是返回一个新的字符串(String)，而不是操作原来的字符串。
+该方法可适用于 String 和 &str 类型。replace() 方法接收两个参数，第一个参数是要被替换的字符串，第二个参数是新的字符串。该方法会替换所有匹配到的字符串。该方法是**返回一个新的字符串(String)，而不是操作原来的字符串**。
 
 示例代码如下：
 
@@ -122,5 +122,29 @@ fn main() {
     let string_replace = String::from("I like rust. Learning rust is my favorite!");
     let new_string_replace = string_replace.replace("rust", "RUST");
     dbg!(new_string_replace);
+}
+```
+
+#### 2、replacen
+
+该方法可适用于 `String` 和 `&str` 类型。`replacen()` 方法接收三个参数，前两个参数与 `replace()` 方法一样，第三个参数则表示替换的个数。**该方法是返回一个新的字符串，而不是操作原来的字符串**。
+
+```rust
+fn main() {
+    let string_replace = "I like rust. Learning rust is my favorite!";
+    let new_string_replacen = string_replace.replacen("rust", "RUST", 1);
+    dbg!(new_string_replacen);
+}
+```
+
+#### 3、replace_range
+
+该方法**仅适用**于 `String` 类型。`replace_range` 接收两个参数，第一个参数是要替换字符串的范围（Range），第二个参数是新的字符串。**该方法是直接操作原来的字符串，不会返回新的字符串。该方法需要使用 `mut` 关键字修饰**。
+
+```rust
+fn main() {
+    let mut string_replace_range = String::from("I like rust!");
+    string_replace_range.replace_range(7..8, "R");
+    dbg!(string_replace_range);
 }
 ```
