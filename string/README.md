@@ -155,3 +155,34 @@ fn main() {
 
 #### 1、pop
 
+> 删除并返回字符串的最后一个字符
+
+```rust
+fn main() {
+    let mut string_pop = String::from("rust pop 中文!");
+    let p1 = string_pop.pop();
+    let p2 = string_pop.pop();
+    dbg!(p1);
+    dbg!(p2);
+    dbg!(string_pop);
+}
+```
+
+运行结果为
+
+```
+p1 = Some(
+   '!',
+)
+p2 = Some(
+   '文',
+)
+string_pop = "rust pop 中"
+```
+
+
+#### 2、remove
+
+> 删除并返回字符串中指定位置的字符
+
+
