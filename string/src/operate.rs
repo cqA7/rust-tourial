@@ -33,3 +33,8 @@ pub fn replace_range<R: RangeBounds<usize>>(s: &mut String, range: R, to: &str) 
 pub fn pop(s: &mut String) -> Option<char> {
     s.pop()
 }
+
+pub fn remove(s: &mut String, idx: usize) -> char {
+    let ch = s.remove(idx);
+    ch
+}

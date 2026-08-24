@@ -63,6 +63,7 @@ fn main() {
     println!("String 测试 replace_range 方法 -> {}", string_range_test);
 
     println!("\n=============pop==============\n");
+
     let mut string_pop_test = String::from("hi, you");
     if let Some(char_pop) = pop(&mut string_pop_test) {
         println!("pop removed char is {}", char_pop);
@@ -80,6 +81,10 @@ fn main() {
     }
 
     println!("string_pop_test is {}", string_pop_test);
+
+    println!("\n=============remove==============\n");
+
+    let string_remove_test = String::from("测试 remove 方法");
 
     println!("\n===========================\n");
 

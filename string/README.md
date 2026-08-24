@@ -187,4 +187,20 @@ string_pop = "rust pop 中"
 
 **该方法是直接操作原来的字符串**。但是存在返回值，其返回值是删除位置的字符串，只接收一个参数，表示该字符起始索引位置。`remove()` 方法是按照字节来处理字符串的，如果参数所给的位置不是合法的字符边界，则会发生错误。
 
+```rust
+fn main() {
+    let mut string_remove = String::from("测试remove方法");
+    println!(
+        "string_remove 占 {} 个字节",
+        std::mem::size_of_val(string_remove.as_str())
+    );
+    // 删除第一个汉字
+    string_remove.remove(0);
+    // 下面代码会发生错误
+    // string_remove.remove(1);
+    // 直接删除第二个汉字
+    // string_remove.remove(3);
+    dbg!(string_remove);
+}
+```
 
