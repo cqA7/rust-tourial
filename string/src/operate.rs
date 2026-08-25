@@ -38,3 +38,7 @@ pub fn remove(s: &mut String, idx: usize) -> char {
     let ch = s.remove(idx);
     ch
 }
+
+pub fn truncate(s: &mut String, idx: usize) {
+    s.truncate(idx);
+}

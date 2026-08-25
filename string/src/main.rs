@@ -1,7 +1,10 @@
 mod operate;
 mod slice;
 
-use operate::{insert, pop, push, replace, replace_range, replace_str, replacen, replacen_str};
+use operate::{
+    insert, pop, push, remove, replace, replace_range, replace_str, replacen, replacen_str,
+    truncate,
+};
 use slice::{str_2_string, str_slice, string_2_str};
 use std::mem::size_of_val;
 
@@ -84,7 +87,15 @@ fn main() {
 
     println!("\n=============remove==============\n");
 
-    let string_remove_test = String::from("测试 remove 方法");
+    let mut string_remove_test = String::from("测试 remove 方法");
+    let ch = remove(&mut string_remove_test, 0);
+    println!("removed char is {}", ch);
+
+    println!("\n=============truncate==============\n");
+
+    let mut string_truncate_test = String::from("测试 truncate 方法");
+    truncate(&mut string_truncate_test, 6);
+    println!("测试 truncate 方法 -> {}", string_truncate_test);
 
     println!("\n===========================\n");
 
