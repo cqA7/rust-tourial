@@ -2,11 +2,11 @@ mod operate;
 mod slice;
 
 use operate::{
-    insert, pop, push, remove, replace, replace_range, replace_str, replacen, replacen_str,
+    clear, insert, pop, push, remove, replace, replace_range, replace_str, replacen, replacen_str,
     truncate,
 };
 use slice::{str_2_string, str_slice, string_2_str};
-use std::mem::size_of_val;
+use std::{mem::size_of_val, ops::Add};
 
 fn main() {
     let string = String::from("hello, rust");
@@ -97,11 +97,21 @@ fn main() {
     truncate(&mut string_truncate_test, 6);
     println!("测试 truncate 方法 -> {}", string_truncate_test);
 
-    println!("\n===========================\n");
+    println!("\n=============clear==============\n");
+
+    let mut string_clear_test = String::from("测试 clear 方法");
+    clear(&mut string_clear_test);
+    println!("测试 clear 方法 -> {}", string_clear_test);
+
+    println!("\n=============连接(Concatenate)==============\n");
 
     let string_append = String::from("hello ");
     let string_rust = String::from("rust");
-    let result = string_append + &string_rust;
+    // &string_rust会自动解引用为&str
+    // 下面两种方式：通过 + 进行链接 和 调用 add 进行链接是等价的
+    // add 方法的定义是：fn add(self, s: &str) -> String
+    // let result = string_append + &string_rust;
+    let result = string_append.add(&string_rust);
     let mut result = result + "!";
     result += "!!!";
     println!("测试链接字符串 -> {}", result)

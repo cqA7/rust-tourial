@@ -220,3 +220,73 @@ fn main() {
 }
 ```
 
+#### 4、`clear`
+
+> 清空字符串
+
+**该方法是直接操作原来的字符串**。调用后，删除字符串中的所有字符，相当于 `truncate()` 方法参数为 0 的时候。
+
+示例代码如下：
+
+```rust
+fn main() {
+    let mut string_clear = String::from("string clear");
+    string_clear.clear();
+    dbg!(string_clear);
+}
+```
+
+#### 5、连接（Concatenate）
+
+##### a. 使用 `+` 或者 `+=` 连接字符串
+
+使用 `+` 或者 `+=` 连接字符串，要求右边的参数必须为字符串的切片引用（Slice）类型。其实当调用 `+` 的操作符时，相当于调用了 `std::string` 标准库中的 [`add()`](https://doc.rust-lang.org/std/string/struct.String.html#method.add) 方法，这里 `add()` 方法的第二个参数是一个引用的类型。因此我们在使用 `+` 时， 必须传递切片引用类型。不能直接传递 `String` 类型。**`+` 是返回一个新的字符串，所以变量声明可以不需要 `mut` 关键字修饰**。
+
+```rust
+fn main() {
+    let string_append = String::from("hello ");
+    let string_rust = String::from("rust");
+    // &string_rust会自动解引用为&str
+    let result = string_append + &string_rust;
+    let mut result = result + "!"; // `result + "!"` 中的 `result` 是不可变的
+    result += "!!!";
+
+    println!("连接字符串 + -> {}", result);
+}
+```
+
+`add()` 方法的定义：
+
+```rust
+fn add(self, s: &str) -> String
+```
+
+```rust
+fn main() {
+    let string_append = String::from("hello ");
+    let string_rust = String::from("rust");
+    // &string_rust会自动解引用为&str
+    let result = string_append.add(&string_rust);
+    let mut result = result + "!"; // `result + "!"` 中的 `result` 是不可变的
+    result += "!!!";
+
+    println!("连接字符串 + -> {}", result);
+}
+```
+
+因为该方法涉及到更复杂的特征功能，因此我们这里简单说明下：
+
+```rust
+fn main() {
+    let s1 = String::from("hello,");
+    let s2 = String::from("world!");
+    // 在下句中，s1的所有权被转移走了，因此后面不能再使用s1
+    let s3 = s1 + &s2;
+    assert_eq!(s3,"hello,world!");
+    // 下面的语句如果去掉注释，就会报错
+    // println!("{}",s1);
+}
+```
+
+**重要：**`self` 是 `String` 类型的字符串 `s1`，该函数说明，只能将 `&str` 类型的字符串切片添加到 `String` 类型的 `s1` 上，然后返回一个新的 `String` 类型，所以 `let s3 = s1 + &s2;` 就很好解释了，将 `String` 类型的 `s1` 与 `&str` 类型的 `s2` 进行相加，最终得到 `String` 类型的 `s3`。
+

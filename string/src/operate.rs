@@ -42,3 +42,7 @@ pub fn remove(s: &mut String, idx: usize) -> char {
 pub fn truncate(s: &mut String, idx: usize) {
     s.truncate(idx);
 }
+
+pub fn clear(s: &mut String) {
+    s.clear();
+}
