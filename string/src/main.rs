@@ -114,5 +114,12 @@ fn main() {
     let result = string_append.add(&string_rust);
     let mut result = result + "!";
     result += "!!!";
-    println!("测试链接字符串 -> {}", result)
+    println!("测试链接字符串 -> {}", result);
+
+    println!("\n=============连接(Concatenate)-format==============\n");
+    let s1 = "hello";
+    let s2 = String::from("rust");
+    let format_string = format!("{} {}", s1, s2);
+    println!("s1 is {}, s2 is {}", s1, s2);
+    println!("format string is {}", format_string);
 }

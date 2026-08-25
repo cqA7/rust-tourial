@@ -290,3 +290,18 @@ fn main() {
 
 **重要：**`self` 是 `String` 类型的字符串 `s1`，该函数说明，只能将 `&str` 类型的字符串切片添加到 `String` 类型的 `s1` 上，然后返回一个新的 `String` 类型，所以 `let s3 = s1 + &s2;` 就很好解释了，将 `String` 类型的 `s1` 与 `&str` 类型的 `s2` 进行相加，最终得到 `String` 类型的 `s3`。
 
+`s1` 这个变量通过调用 `add()` 方法后，所有权被转移到 `add()` 方法里面， `add()` 方法调用后就被释放了，同时 `s1` 也被释放了。再使用 `s1` 就会发生错误。这里涉及到[所有权转移（Move）](https://beatai.org/rust-course/basic/ownership/ownership#%E8%BD%AC%E7%A7%BB%E6%89%80%E6%9C%89%E6%9D%83)的相关知识。
+
+##### b. 使用 `format!` 连接字符串
+
+> 比 `+` 更灵活
+
+```rust
+let name = "name";
+let language = "Rust";
+let version = 1.95;
+
+let s = format!("{} is learning {} {}", name, language, version);
+```
+
+而且 **`format!` 不会获取参数的所有权**，所以 `s1`、`s2` 后面仍然可以使用。
