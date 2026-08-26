@@ -305,3 +305,83 @@ let s = format!("{} is learning {} {}", name, language, version);
 ```
 
 而且 **`format!` 不会获取参数的所有权**，所以 `s1`、`s2` 后面仍然可以使用。
+
+#### 字符串转义
+
+我们可以通过转义的方式 `\` 输出 ASCII 和 Unicode 字符。
+
+```rust
+fn main() {
+    // 通过 \ + 字符的十六进制表示，转义输出一个字符
+    let byte_escape = "I'm writing \x52\x75\x73\x74!";
+    println!("What are you doing\x3F (\\x3F means ?) {}", byte_escape);
+
+    // \u 可以输出一个 unicode 字符
+    let unicode_codepoint = "\u{211D}";
+    let character_name = "\"DOUBLE-STRUCK CAPITAL R\"";
+
+    println!(
+        "Unicode character {} (U+211D) is called {}",
+        unicode_codepoint, character_name
+    );
+
+    // 换行了也会保持之前的字符串格式
+    // 使用\忽略换行符
+    let long_string = "String literals
+                        can span multiple lines.
+                        The linebreak and indentation here ->\
+                        <- can be escaped too!";
+    println!("{}", long_string);
+}
+```
+
+当然，在某些情况下，可能你会希望保持字符串的原样，不要转义：
+
+```rust
+fn main() {
+    println!("{}", "hello \\x52\\x75\\x73\\x74");
+    let raw_str = r"Escapes don't work here: \x3F \u{211D}";
+    println!("{}", raw_str);
+
+    // 如果字符串包含双引号，可以在开头和结尾加 #
+    let quotes = r#"And then I said: "There is no escape!""#;
+    println!("{}", quotes);
+
+    // 如果字符串中包含 # 号，可以在开头和结尾加多个 # 号，最多加255个，只需保证与字符串中连续 # 号的个数不超过开头和结尾的 # 号的个数即可
+    let longer_delimiter = r###"A string with "# in it. And even "##!"###;
+    println!("{}", longer_delimiter);
+}
+```
+
+## 遍历 UTF-8 字符串
+
+### 字符
+
+如果你想要以 Unicode 字符的方式遍历字符串，最好的办法是使用 `chars` 方法，例如：
+
+```rust
+for c in "中国人".chars() {
+    println!("{}", c);
+}
+
+for c in String::from("中国人").chars() {
+	println!("{}", c);
+}
+```
+
+### 字节
+
+```rust
+let iter_string = String::from("中国人");
+for c in iter_string.bytes() {
+	println!("{}", c);
+}
+
+let iter_str = "中国人";
+for c in iter_str.bytes() {
+	println!("{}", c);
+}
+```
+
+## 字符串深度剖析
+
