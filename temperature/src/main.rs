@@ -1,17 +1,17 @@
-use std::env;
+use std::{env, process};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
         eprintln!("用法: {} <数值> <单位>", args[0]);
         eprintln!("单位: C 表示摄氏, F 表示华氏");
-        std::process::exit(1)
+        process::exit(1)
     }
     let value: f64 = match args[1].trim().parse() {
         Ok(v) => v,
         Err(_) => {
             eprintln!("错误, '{}' 不是有效数字", args[1]);
-            std::process::exit(1)
+            process::exit(1)
         }
     };
 
@@ -25,7 +25,7 @@ fn main() {
         println!("{:.2}°F = {:.2}°C", value, c)
     } else {
         eprintln!("错误: 单位必须是 C 或 F");
-        std::process::exit(1);
+        process::exit(1);
     }
 }
 

@@ -1,27 +1,22 @@
+mod user;
+mod user_service;
+
+use user::User;
+use user_service::build_user;
+
 fn main() {
-    #[derive(Debug)]
-    struct User {
-        active: bool,
-        username: String,
-        email: String,
-        sign_in_count: u64,
-    }
-
-    let mut user1 = User {
-        email: String::from("someone@example.com"),
-        username: String::from("someusername123"),
-        active: true,
-        sign_in_count: 1,
+    let mut user = User {
+        name: String::from("Tom"),
+        age: 10,
     };
-    user1.email = String::from("another@example.com");
+    user.name = String::from("jerry");
+    println!("user name is {}, user age is {}", user.name, user.age);
 
-    let user2 = User {
-        email: String::from("tt@ww.com"),
-        username: String::from("someusername123"),
-        active: true,
-        sign_in_count: 1,
-    };
+    let name = String::from("tesla");
+    let tesla_user = build_user(name, 10);
+    println!("Tesla's name is {}", tesla_user.name);
 
-    println!("{:#?}", user1);
-    println!("{:#?}", user2);
+    let user1 = build_user(String::from("user1"), 10);
+    let user2 = User { age: 20, ..user1 };
+    println!("user2 is {:#?}", user2);
 }
