@@ -1,6 +1,6 @@
 mod demo;
 
-use demo::{bit_operate, float, greet_world, integer, nan, range};
+use demo::{bit_operate, ch, float, integer, nan, range};
 
 fn main() {
     integer();
@@ -8,5 +8,5 @@ fn main() {
     nan();
     bit_operate();
     range();
-    greet_world();
+    ch();
 }
