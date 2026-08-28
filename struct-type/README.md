@@ -81,8 +81,72 @@ fn build_user(email: String, username: String) -> User {
 
 #### 结构体更新语法
 
+在实际场景中，有一种情况很常见：根据已有的结构体实例，创建新的结构体实例，例如根据已有的 `user1` 实例来构建 `user2`：
+
+```rust
+  let user2 = User {
+        active: user1.active,
+        username: user1.username,
+        email: String::from("another@example.com"),
+        sign_in_count: user1.sign_in_count,
+    };
+```
+
+老话重提，如果你从 TypeScript 过来，肯定觉得啰嗦爆了：竟然手动把 `user1` 的三个字段逐个赋值给 `user2`，好在 Rust 为我们提供了 `结构体更新语法`：
+
+```rust
+  let user2 = User {
+        email: String::from("another@example.com"),
+        ..user1
+    };
+```
+
+因为 `user2` 仅仅在 `email` 上与 `user1` 不同，因此我们只需要对 `email` 进行赋值，剩下的通过结构体更新语法 `..user1` 即可完成。
+
+`..` 语法表明凡是我们没有显式声明的字段，全部从 `user1` 中自动获取。需要注意的是 `..user1` **必须在结构体的尾部使用**。
+
+> 结构体更新语法跟赋值语句 `=` 非常相像，因此在上面代码中，`user1` 的部分字段所有权被转移到 `user2` 中：`username` 字段发生了所有权转移，作为结果，`user1` 无法再被使用。
+> 
+> 聪明的读者肯定要发问了：明明有三个字段进行了自动赋值，为何只有 `username` 发生了所有权转移？
+> 
+> 仔细回想一下[所有权](https://beatai.org/rust-course/basic/ownership/ownership#%E6%8B%B7%E8%B4%9D%E6%B5%85%E6%8B%B7%E8%B4%9D)那一节的内容，我们提到了 `Copy` 特征：实现了 `Copy` 特征的类型无需所有权转移，可以直接在赋值时进行 数据拷贝，其中 `bool` 和 `u64` 类型就实现了 `Copy` 特征，因此 `active` 和 `sign_in_count` 字段在赋值给 `user2` 时，仅仅发生了拷贝，而不是所有权转移。
+> 
+> 值得注意的是：`username` 所有权被转移给了 `user2`，导致了 `user1` 无法再被使用，但是并不代表 `user1` 内部的其它字段不能被继续使用，例如：
+
+```rust
+#[derive(Debug)]
+struct User {
+	active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+fn main() {
+	let user1 = User {
+	    email: String::from("someone@example.com"),
+	    username: String::from("someusername123"),
+	    active: true,
+	    sign_in_count: 1,
+	};
+	let user2 = User {
+	    active: user1.active,
+	    username: user1.username,
+	    email: String::from("another@example.com"),
+	    sign_in_count: user1.sign_in_count,
+	};
+	println!("{}", user1.active);
+	// 下面这两行会报错
+	println!("{:?}", user1);
+	println!("{:?}", user1.username);
+}
+```
 
 
+### 结构体的内存排列
+
+
+
+![](https://img.up-4ever.site/20260828165745198.png)
 
 
 ---
@@ -108,3 +172,39 @@ fn build_user(email: String, username: String) -> User {
 **一句话总结**:`crate::User` 没报错,是因为 crate 根 `main.rs` 用 `use user::User;` 把 `User` 这个名字带进了根作用域,而 **Rust 允许子模块访问祖先模块的私有 item**。
 
 如果想让根层的 `User` 也能被 crate 外部(比如别的 crate)使用,需要写成 `pub use user::User;`(再导出);现在只是内部模块能用,所以当前的私有 `use` 已经够用了。
+
+---
+
+关于 `#[derive(Debug)]`
+
+`#[derive(Debug)]` 用于让 Rust **自动为结构体、枚举等类型实现 `Debug` trait**，从而可以使用 `{:?}` 或 `{:#?}` 进行调试输出。
+
+```rust
+#[derive(Debug)]
+struct User {
+    name: String,
+}
+
+let user = User {
+    name: String::from("Tom"),
+};
+
+println!("{:?}", user);
+// User { name: "Tom" }
+
+println!("{:#?}", user);
+// User {
+//     name: "Tom",
+// }
+```
+
+**要点：**
+
+- `derive`：让 Rust 自动生成 trait 的实现
+- `Debug`：用于调试输出
+- `{:?}`：紧凑的调试格式
+- `{:#?}`：格式化的、易读的调试格式
+- 结构体中的字段也必须支持 `Debug`，才能自动派生 `Debug`
+- `Debug` 主要用于**开发和调试**，不是面向最终用户的输出格式
+
+> `#[derive(Debug)]` = **自动让类型支持 `{:?}` 调试打印。**

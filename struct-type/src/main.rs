@@ -19,4 +19,9 @@ fn main() {
     let user1 = build_user(String::from("user1"), 10);
     let user2 = User { age: 20, ..user1 };
     println!("user2 is {:#?}", user2);
+    // 下面两行都会报错，因为 name 字段的所有权发生转移
+    // println!("user1 is {:#?}", user1);
+    // println!("user1 is {:#?}", user1.name);
+    // name 所有权被转移给了 user2，导致了 user1 无法再被使用，但是并不代表 user1 内部的其它字段不能被继续使用
+    println!("user1's age is {:#?}", user1.age);
 }
