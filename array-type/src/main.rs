@@ -11,4 +11,8 @@ fn main() {
 
     let arr_string: [String; 8] = std::array::from_fn(|i| format!("rust is good{}", i));
     println!("arr_string is {:#?}", arr_string);
+
+    let a3: [i32; 5] = [9, 8, 7, 6, 5];
+    let slice: &[i32] = &a3[1..3];
+    println!("a3 slice is {:?}", slice);
 }
