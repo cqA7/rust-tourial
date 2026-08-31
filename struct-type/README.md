@@ -144,9 +144,51 @@ fn main() {
 
 ### 结构体的内存排列
 
+```rust
+#[derive(Debug)]
+ struct File {
+   name: String,
+   data: Vec<u8>,
+ }
 
+ fn main() {
+   let f1 = File {
+     name: String::from("f1.txt"),
+     data: Vec::new(),
+   };
+
+   let f1_name = &f1.name;
+   let f1_length = &f1.data.len();
+
+   println!("{:?}", f1);
+   println!("{} is {} bytes long", f1_name, f1_length);
+ }
+```
+
+上面定义的 `File` 结构体在内存中的排列如下图所示：
 
 ![](https://img.up-4ever.site/20260828165745198.png)
+
+从图中可以清晰地看出 `File` 结构体两个字段 `name` 和 `data` 分别拥有底层两个 `[u8]` 数组的所有权（`String` 类型的底层也是 `[u8]` 数组），通过 `ptr` 指针指向底层数组的内存地址，这里你可以把 `ptr` 指针理解为 Rust 中的引用类型。
+
+该图片也侧面印证了：**把结构体中具有所有权的字段转移出去后，将无法再访问该字段，但是可以正常访问其它的字段**。
+
+> `String` 和 `Vec<T>` 在结构体里面主要保存的是 **指针（ptr）+ 长度（len）+ 容量（capacity）**，真正的数据通常存放在堆上；`File` 则把这两个“管理数据的结构”放在自己内部。
+
+## 元组结构体
+
+结构体必须要有名称，但是结构体的**字段**可以没有名称，这种结构体长得很像元组，因此被称为元组结构体，例如：
+
+```rust
+struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
+
+let black = Color(0, 0, 0);
+let origin = Point(0, 0, 0);
+```
+
+元组结构体在你希望有一个整体名称，但是又不关心里面字段的名称时将非常有用。例如上面的 `Point` 元组结构体，众所周知 3D 点是 `(x, y, z)` 形式的坐标点，因此我们无需再为内部的字段逐一命名为：`x`, `y`, `z`。
+
 
 
 ---

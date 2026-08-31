@@ -1,7 +1,7 @@
 mod user;
 mod user_service;
 
-use user::User;
+use user::{Point, User};
 use user_service::build_user;
 
 fn main() {
@@ -24,4 +24,7 @@ fn main() {
     // println!("user1 is {:#?}", user1.name);
     // name 所有权被转移给了 user2，导致了 user1 无法再被使用，但是并不代表 user1 内部的其它字段不能被继续使用
     println!("user1's age is {:#?}", user1.age);
+
+    let point = Point(1, 2, 3);
+    println!("x, y, z is {}, {}, {}", point.0, point.1, point.2);
 }
