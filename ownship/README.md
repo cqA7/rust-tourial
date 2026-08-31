@@ -1,4 +1,4 @@
-> 所有权参考教程：https://beatai.org/rust-course/basic/ownership/ownership
+> 所有权参考教程：[https://beatai.org/rust-course/basic/ownership/ownership](https://beatai.org/rust-course/basic/ownership/ownership)
 
 ## 栈(Stack)与堆(Heap)
 

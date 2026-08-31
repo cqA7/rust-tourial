@@ -1,4 +1,4 @@
-> 参考文档： https://beatai.org/rust-course/basic/compound-type/string-slice
+> 参考文档： [https://beatai.org/rust-course/basic/compound-type/string-slice](https://beatai.org/rust-course/basic/compound-type/string-slice)
 
 ## 切片
 

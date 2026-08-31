@@ -1,4 +1,4 @@
-> 本节参考文档：https://beatai.org/rust-course/basic/compound-type/struct
+> 本节参考文档：[https://beatai.org/rust-course/basic/compound-type/struct](https://beatai.org/rust-course/basic/compound-type/struct)
 
 ## 结构体
 
@@ -189,7 +189,198 @@ let origin = Point(0, 0, 0);
 
 元组结构体在你希望有一个整体名称，但是又不关心里面字段的名称时将非常有用。例如上面的 `Point` 元组结构体，众所周知 3D 点是 `(x, y, z)` 形式的坐标点，因此我们无需再为内部的字段逐一命名为：`x`, `y`, `z`。
 
+## 单元结构体
 
+单元结构体（Unit Struct）是一种没有任何字段的结构体。
+
+```rust
+struct User;
+
+fn main() {
+    let user = User;
+}
+```
+
+这里的 `User` 就是一个单元结构体。
+
+单元结构体主要用于表示一种类型或身份，常用于 Trait 实现。
+
+```rust
+struct AlwaysEqual;
+
+let subject = AlwaysEqual;
+
+// 我们不关心 AlwaysEqual 的字段数据，只关心它的行为，因此将它声明为单元结构体，然后再为它实现某个特征
+impl SomeTrait for AlwaysEqual {
+
+}
+```
+
+## 结构体数据的所有权
+
+在之前的 `User` 结构体的定义中，有一处细节：我们使用了自身拥有所有权的 `String` 类型而不是基于引用的 `&str` 字符串切片类型。这是一个有意而为之的选择：因为我们想要这个结构体拥有它所有的数据，而不是从其它地方借用数据。
+
+你也可以让 `User` 结构体从其它对象借用数据，不过这么做，就需要引入[生命周期(lifetimes)](https://beatai.org/rust-course/basic/lifetime)这个新概念（也是一个复杂的概念），简而言之，生命周期能确保结构体的作用范围要比它所借用的数据的作用范围要小。
+
+总之，如果你想在结构体中使用一个引用，就必须加上生命周期，否则就会报错：
+
+```rust
+struct User {
+    username: &str,
+    email: &str,
+    sign_in_count: u64,
+    active: bool,
+}
+
+fn main() {
+    let user1 = User {
+        email: "someone@example.com",
+        username: "someusername123",
+        active: true,
+        sign_in_count: 1,
+    };
+}
+```
+
+编译器会抱怨它需要生命周期标识符：
+
+```
+error[E0106]: missing lifetime specifier
+ --> src/main.rs:2:15
+  |
+2 |     username: &str,
+  |               ^ expected named lifetime parameter // 需要一个生命周期
+  |
+help: consider introducing a named lifetime parameter // 考虑像下面的代码这样引入一个生命周期
+  |
+1 ~ struct User<'a> {
+2 ~     username: &'a str,
+  |
+
+error[E0106]: missing lifetime specifier
+ --> src/main.rs:3:12
+  |
+3 |     email: &str,
+  |            ^ expected named lifetime parameter
+  |
+help: consider introducing a named lifetime parameter
+  |
+1 ~ struct User<'a> {
+2 |     username: &str,
+3 ~     email: &'a str,
+  |
+```
+
+## 使用 `#[derive(Debug)]` 来打印结构体的信息
+
+在前面的代码中我们使用 `#[derive(Debug)]` 对结构体进行了标记，这样才能使用 `println!("{:?}", s);` 的方式对其进行打印输出，如果不加，看看会发生什么:
+
+```rust
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {}", rect1);
+}
+```
+
+首先可以观察到，上面使用了 `{}` 而不是之前的 `{:?}`，运行后报错：
+
+```shell
+error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
+```
+
+提示我们结构体 `Rectangle` 没有实现 `Display` 特征，这是因为如果我们使用 `{}` 来格式化输出，那对应的类型就必须实现 `Display` 特征，以前学习的基本类型，都默认实现了该特征:
+
+```rust
+fn main() {
+    let v = 1;
+    let b = true;
+
+    println!("{}, {}", v, b);
+}
+```
+
+上面代码不会报错，那么结构体为什么不默认实现 `Display` 特征呢？原因在于结构体较为复杂，例如考虑以下问题：你想要逗号对字段进行分割吗？需要括号吗？加在什么地方？所有的字段都应该显示？类似的还有很多，由于这种复杂性，Rust 不希望猜测我们想要的是什么，而是把选择权交给我们自己来实现：如果要用 `{}` 的方式打印结构体，那就自己实现 `Display` 特征。
+
+接下来继续阅读报错：
+
+```shell
+= help: the trait `std::fmt::Display` is not implemented for `Rectangle`
+= note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+```
+
+上面提示我们使用 `{:?}` 来试试，这个方式我们在本文的前面也见过，下面来试试:
+
+```rust
+println!("rect1 is {:?}", rect1);
+```
+
+可是依然无情报错了:
+
+```shell
+error[E0277]: `Rectangle` doesn't implement `Debug`
+```
+
+好在，聪明的编译器又一次给出了提示:
+
+```shell
+= help: the trait `Debug` is not implemented for `Rectangle`
+= note: add `#[derive(Debug)]` to `Rectangle` or manually `impl Debug for Rectangle`
+```
+
+让我们实现 `Debug` 特征，Oh No，就是不想实现 `Display` 特征，才用的 `{:?}`，怎么又要实现 `Debug`，但是仔细看，提示中有一行： `add #[derive(Debug)] to Rectangle`， 哦？这不就是我们前文一直在使用的吗？
+
+首先，Rust 默认不会为我们实现 `Debug`，为了实现，有两种方式可以选择：
+
+- 手动实现
+- 使用 `derive` 派生实现
+
+后者简单的多，但是也有限制，具体见[附录 D](https://beatai.org/rust-course/appendix/derive)，这里我们就不再深入讲解，来看看该如何使用:
+
+```rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {:?}", rect1);
+}
+```
+
+此时运行程序，就不再有错误，输出如下:
+
+```shell
+$ cargo run
+rect1 is Rectangle { width: 30, height: 50 }
+```
+
+这个输出格式看上去也不赖嘛，虽然未必是最好的。这种格式是 Rust 自动为我们提供的实现，看上基本就跟结构体的定义形式一样。
+
+当结构体较大时，我们可能希望能够有更好的输出表现，此时可以使用 `{:#?}` 来替代 `{:?}`，输出如下:
+
+```shell
+rect1 is Rectangle {
+    width: 30,
+    height: 50,
+}
+```
+
+此时结构体的输出跟我们创建时候的代码几乎一模一样了！当然，如果大家还是不满足，那最好还是自己实现 `Display` 特征，以向用户更美的展示你的私藏结构体。关于格式化输出的更多内容，我们强烈推荐看看这个[格式化输出章节](https://beatai.org/rust-course/basic/formatted-output#debug-%E7%89%B9%E5%BE%81)。
 
 ---
 
@@ -217,36 +408,84 @@ let origin = Point(0, 0, 0);
 
 ---
 
-关于 `#[derive(Debug)]`
+Trait、impl、struct 的关系
 
-`#[derive(Debug)]` 用于让 Rust **自动为结构体、枚举等类型实现 `Debug` trait**，从而可以使用 `{:?}` 或 `{:#?}` 进行调试输出。
+```
+struct
+  ↓
+定义“是什么”
+  ↓
+具体类型
 
-```rust
-#[derive(Debug)]
-struct User {
-    name: String,
-}
 
-let user = User {
-    name: String::from("Tom"),
-};
+trait
+  ↓
+定义“能做什么”
+  ↓
+一组行为/能力
 
-println!("{:?}", user);
-// User { name: "Tom" }
 
-println!("{:#?}", user);
-// User {
-//     name: "Tom",
-// }
+impl
+  ↓
+把某种能力赋予某个类型
 ```
 
-**要点：**
+例如：
 
-- `derive`：让 Rust 自动生成 trait 的实现
-- `Debug`：用于调试输出
-- `{:?}`：紧凑的调试格式
-- `{:#?}`：格式化的、易读的调试格式
-- 结构体中的字段也必须支持 `Debug`，才能自动派生 `Debug`
-- `Debug` 主要用于**开发和调试**，不是面向最终用户的输出格式
+```rust
+struct Dog;
 
-> `#[derive(Debug)]` = **自动让类型支持 `{:?}` 调试打印。**
+trait Speak {
+    fn speak(&self);
+}
+
+impl Speak for Dog {
+    fn speak(&self) {
+        println!("汪汪");
+    }
+}
+```
+
+就是：
+
+```
+Dog
+ │
+ │ 实现
+ ↓
+Speak
+ │
+ ↓
+拥有 speak() 能力
+```
+
+单元结构体 + Trait
+
+两者经常一起出现：
+
+```rust
+struct ConsoleLogger;
+
+trait Logger {
+    fn log(&self);
+}
+
+impl Logger for ConsoleLogger {
+    fn log(&self) {
+        println!("logging...");
+    }
+}
+```
+
+这里：
+
+- `ConsoleLogger` → 一个**没有数据的具体类型**
+- `Logger` → 定义“日志记录”这个**能力**
+- `impl Logger for ConsoleLogger` → 让 `ConsoleLogger` **具备这个能力**
+
+### 一句话记忆
+
+> **单元结构体：没有数据，只表示一个类型。**
+> **Trait：不负责存数据，只描述一个类型“能做什么”。**
+> **`impl`：让具体类型获得 Trait 定义的能力。**
+
