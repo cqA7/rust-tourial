@@ -1,0 +1,139 @@
+> 本节参考文档: [https://beatai.org/rust-course/basic/compound-type/array](https://beatai.org/rust-course/basic/compound-type/array)
+
+## 数组
+
+在 Rust 中，最常用的数组有两种，第一种是速度很快但是长度固定的 `array`，第二种是可动态增长的但是有性能损耗的 `Vector`，在本书中，我们称 `array` 为数组，`Vector` 为动态数组。
+
+这两个数组的关系跟 `&str` 与 `String` 的关系很像，前者是长度固定的字符串切片，后者是可动态增长的字符串。其实，在 Rust 中无论是 `String` 还是 `Vector`，它们都是 Rust 的高级类型：集合类型，在后面章节会有详细介绍。
+
+对于本章节，我们的重点还是放在数组 `array` 上。数组的具体定义很简单：将多个**类型相同**的元素依次组合在一起，就是一个数组。结合上面的内容，可以得出数组的三要素：
+
+- 长度固定
+- 元素必须有相同的类型
+- 依次线性排列
+
+这里再啰嗦一句，**我们这里说的数组是 Rust 的基本类型，是固定长度的，这点与其他编程语言不同，其它编程语言的数组往往是可变长度的，与 Rust 中的动态数组 `Vector` 类似**。
+
+### 创建数组
+
+在 Rust 中，数组是这样定义的：
+
+```rust
+fn main() {
+    let a = [1, 2, 3, 4, 5];
+}
+```
+
+由于它的元素类型大小固定，且长度也是固定，因此**数组 `array` 是存储在栈上**，性能也会非常优秀。与此对应，**动态数组 `Vector` 是存储在堆上**，因此长度可以动态改变。当你不确定是使用数组还是动态数组时，那就应该使用后者，具体见[动态数组 Vector](https://beatai.org/rust-course/basic/collections/vector)。
+
+在一些时候，还需要为**数组声明类型**，如下所示：
+
+```rust
+let a: [i32; 5] = [1, 2, 3, 4, 5];
+```
+
+这里，数组类型是通过方括号语法声明，`i32` 是元素类型，分号后面的数字 `5` 是数组长度，数组类型也从侧面说明了**数组的元素类型要统一，长度要固定**。
+
+还可以使用下面的语法初始化一个**某个值重复出现 N 次的数组**：
+
+```rust
+let a = [3; 5];
+```
+
+`a` 数组包含 `5` 个元素，这些元素的初始化值为 `3`，聪明的读者已经发现，这种语法跟数组类型的**声明语法其实是保持一致**的：`[3; 5]` 和 `[类型; 长度]`。
+
+### 访问数组元素
+
+因为数组是连续存放元素的，因此可以通过索引的方式来访问存放其中的元素：
+
+```rust
+fn main() {
+    let a = [9, 8, 7, 6, 5];
+
+    let first = a[0]; // 获取a数组第一个元素
+    let second = a[1]; // 获取第二个元素
+}
+```
+
+与许多语言类似，数组的索引下标是从 0 开始的。
+
+#### 越界访问
+
+如果使用超出数组范围的索引访问数组元素，会怎么样？下面是一个接收用户的控制台输入，然后将其作为索引访问数组元素的例子：
+
+```rust
+use std::io;
+
+fn main() {
+    let a = [1, 2, 3, 4, 5];
+
+    println!("Please enter an array index.");
+
+    let mut index = String::new();
+    // 读取控制台的输出
+    io::stdin()
+        .read_line(&mut index)
+        .expect("Failed to read line");
+
+    let index: usize = index
+        .trim()
+        .parse()
+        .expect("Index entered was not a number");
+
+    let element = a[index];
+
+    println!(
+        "The value of the element at index {} is: {}",
+        index, element
+    );
+}
+```
+
+使用 `cargo run` 来运行代码，因为数组只有 5 个元素，如果我们试图输入 `5` 去访问第 6 个元素，则会访问到不存在的数组元素，最终程序会崩溃退出：
+
+```shell
+Please enter an array index.
+5
+thread 'main' panicked at 'index out of bounds: the len is 5 but the index is 5', src/main.rs:19:19
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+这就是数组访问越界，访问了数组中不存在的元素，导致 Rust 运行时错误。程序因此退出并显示错误消息，未执行最后的 `println!` 语句。
+
+当你尝试使用索引访问元素时，Rust 将检查你指定的索引是否小于数组长度。如果索引大于或等于数组长度，Rust 会出现 **_panic_**。这种检查只能在运行时进行，比如在上面这种情况下，编译器无法在编译期知道用户运行代码时将输入什么值。
+
+这种就是 Rust 的安全特性之一。在很多系统编程语言中，并不会检查数组越界问题，你会访问到无效的内存地址获取到一个风马牛不相及的值，最终导致在程序逻辑上出现大问题，而且这种问题会非常难以检查。
+
+#### 数组元素为非基础类型
+
+学习了上面的知识，很多朋友肯定觉得已经学会了 Rust 的数组类型，但现实会给我们一记重锤，实际开发中还会碰到一种情况，就是**数组元素是非基本类型**的，这时候大家一定会这样写。
+
+```rust
+let array = [String::from("rust is good!"); 8];
+
+println!("{:#?}", array);
+```
+
+然后你会惊喜的得到编译错误。
+
+```shell
+error[E0277]: the trait bound `String: std::marker::Copy` is not satisfied
+ --> src/main.rs:7:18
+  |
+7 |     let array = [String::from("rust is good!"); 8];
+  |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `std::marker::Copy` is not implemented for `String`
+  |
+  = note: the `Copy` trait is required because this value will be copied for each element of the array
+```
+
+有些还没有看过特征的小伙伴，有可能不太明白这个报错，不过这个目前可以不提，我们就拿之前所学的[所有权](https://beatai.org/rust-course/basic/ownership/ownership)知识，就可以思考明白，前面几个例子都是 Rust 的基本类型，而**基本类型在 Rust 中赋值是以 Copy 的形式**，这时候你就懂了吧，`let array=[3;5]`底层就是不断的Copy出来的，但很可惜复杂类型都没有深拷贝，只能一个个创建。
+
+**正确的写法**，应该调用`std::array::from_fn`
+
+```rust
+let arr_string: [String; 8] = std::array::from_fn(|i| format!("rust is good{}", i));
+println!("arr_string is {:#?}", arr_string);
+```
+
+### 数组切片
+
