@@ -1,4 +1,6 @@
 
+> 本节参考文档: [https://beatai.org/rust-course/basic/compound-type/enum](https://beatai.org/rust-course/basic/compound-type/enum)
+
 ## 枚举
 
 枚举(enum 或 enumeration)允许你通过列举可能的成员来定义一个**枚举类型**，例如扑克牌花色：
