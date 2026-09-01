@@ -1,3 +1,7 @@
+mod example;
+
+use example::example;
+
 fn main() {
     let a = [1, 2, 3, 4, 5];
     let a1: [i32; 5] = [2, 3, 4, 5, 6];
@@ -14,5 +18,7 @@ fn main() {
 
     let a3: [i32; 5] = [9, 8, 7, 6, 5];
     let slice: &[i32] = &a3[1..3];
-    println!("a3 slice is {:?}", slice);
+    println!("a3's slice is {:?}", slice);
+
+    example();
 }
