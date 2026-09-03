@@ -108,3 +108,20 @@ fn main() {
 
 #### 模式绑定
 
+模式匹配的另外一个重要功能是从模式中取出绑定的值，例如：
+
+```rust
+#[derive(Debug)]
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState), // 25美分硬币
+}
+```
