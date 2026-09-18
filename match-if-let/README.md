@@ -111,17 +111,131 @@ fn main() {
 模式匹配的另外一个重要功能是从模式中取出绑定的值，例如：
 
 ```rust
-#[derive(Debug)]
-enum UsState {
-    Alabama,
-    Alaska,
-    // --snip--
+enum Action {
+    Say(String),
+    MoveTo(i32, i32),
+    ChangeColorRGB(u16, u16, u16),
 }
 
-enum Coin {
-    Penny,
-    Nickel,
-    Dime,
-    Quarter(UsState), // 25美分硬币
+fn main() {
+    let actions = [
+        Action::Say("Hello Rust".to_string()),
+        Action::MoveTo(1,2),
+        Action::ChangeColorRGB(255,255,0),
+    ];
+    for action in actions {
+        match action {
+            Action::Say(s) => {
+                println!("{}", s);
+            },
+            Action::MoveTo(x, y) => {
+                println!("point from (0, 0) move to ({}, {})", x, y);
+            },
+            Action::ChangeColorRGB(r, g, _) => {
+                println!("change color into '(r:{}, g:{}, b:0)', 'b' has been ignored",
+                    r, g,
+                );
+            }
+        }
+    }
 }
 ```
+
+运行后输出：
+
+```shell
+$ cargo run
+   Compiling world_hello v0.1.0 (/Users/sunfei/development/rust/world_hello)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.16s
+     Running `target/debug/world_hello`
+Hello Rust
+point from (0, 0) move to (1, 2)
+change color into '(r:255, g:255, b:0)', 'b' has been ignored
+```
+
+
+#### 穷尽匹配
+
+`match` 的匹配必须穷尽所有情况，下面来举例说明，例如：
+
+```rust
+enum Direction {
+    East,
+    West,
+    North,
+    South,
+}
+
+fn main() {
+    let dire = Direction::South;
+    match dire {
+        Direction::East => println!("East"),
+        Direction::North | Direction::South => {
+            println!("South or North");
+        },
+    };
+}
+```
+
+我们没有处理 `Direction::West` 的情况，因此会报错：
+
+```shell
+error[E0004]: non-exhaustive patterns: `West` not covered // 非穷尽匹配，`West` 没有被覆盖
+  --> src/main.rs:10:11
+   |
+1  | / enum Direction {
+2  | |     East,
+3  | |     West,
+   | |     ---- not covered
+4  | |     North,
+5  | |     South,
+6  | | }
+   | |_- `Direction` defined here
+...
+10 |       match dire {
+   |             ^^^^ pattern `West` not covered // 模式 `West` 没有被覆盖
+   |
+   = help: ensure that all possible cases are being handled, possibly by adding wildcards or more match arms
+   = note: the matched value is of type `Direction`
+```
+
+#### `_` 通配符
+
+当我们不想在匹配时列出所有值的时候，可以使用 Rust 提供的一个特殊**模式**，例如，`u8` 可以拥有 0 到 255 的有效的值，但是我们只关心 `1、3、5 和 7` 这几个值，不想列出其它的 `0、2、4、6、8、9 一直到 255` 的值。那么, 我们不必一个一个列出所有值, 因为可以使用特殊的模式 `_` 替代：
+
+> 必须放在最后一个
+
+```rust
+let some_u8_value = 0u8;
+match some_u8_value {
+    1 => println!("one"),
+    3 => println!("three"),
+    5 => println!("five"),
+    7 => println!("seven"),
+    _ => (),
+}
+```
+
+通过将 `_` 其放置于其他分支后，`_` 将会匹配所有遗漏的值。`()` 表示返回**单元类型**与所有分支返回值的类型相同，所以当匹配到 `_` 后，什么也不会发生。
+
+除了`_`通配符，用一个变量来承载其他情况也是可以的。
+
+```rust
+#[derive(Debug)]
+enum Direction {
+    East,
+    West,
+    North,
+    South,
+}
+
+fn main() {
+    let dire = Direction::South;
+    match dire {
+        Direction::East => println!("East"),
+        other => println!("other direction: {:?}", other),
+    };
+}
+```
+
+然而，在某些场景下，我们其实只关心**某一个值是否存在**，此时 `match` 就显得过于啰嗦。

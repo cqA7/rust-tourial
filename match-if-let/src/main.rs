@@ -3,11 +3,12 @@ mod example;
 use example::{Action, Direction, IpAddr};
 
 fn main() {
-    let direction = Direction::East;
+    let direction = Direction::West;
     match direction {
         Direction::East => println!("Going East!"),
         Direction::North | Direction::South => println!("Going North or South!"),
-        _ => println!("Going West!"),
+        o => println!("Going {:?}!", o),
+        // _ => println!("Going West!"),
     };
 
     let ip = IpAddr::Ipv6;
