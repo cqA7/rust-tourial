@@ -281,3 +281,79 @@ fn main() {
 }
 ```
 
+现在如果想对 `v` 进行过滤，只保留值是 `MyEnum::Foo` 的元素，你可能想这么写：
+
+```rust
+v.iter().filter(|x| x == MyEnum::Foo);
+```
+
+但是，实际上这行代码会报错，因为你无法将 `x` 直接跟一个枚举成员进行比较。好在，你可以使用 `match` 来完成，但是会导致代码更为啰嗦，是否有更简洁的方式？答案是使用 `matches!`：
+
+```rust
+v.iter().filter(|x| matches!(x, MyEnum::Foo));
+```
+
+很简单也很简洁，再来看看更多的例子：
+
+```rust
+let foo = 'f';
+assert!(matches!(foo, 'A'..='Z' | 'a'..='z'));
+
+let bar = Some(4);
+assert!(matches!(bar, Some(x) if x > 2));
+```
+
+### 变量遮蔽
+
+无论是 `match` 还是 `if let`，这里都是一个新的代码块，而且这里的绑定相当于新变量，如果你使用同名变量，会发生变量遮蔽：
+
+```rust
+fn main() {
+   let age = Some(30);
+   println!("在匹配前，age是{:?}",age);
+   if let Some(age) = age {
+       println!("匹配出来的age是{}",age);
+   }
+
+   println!("在匹配后，age是{:?}",age);
+}
+```
+
+`cargo run` 运行后输出如下：
+
+```console
+在匹配前，age是Some(30)
+匹配出来的age是30
+在匹配后，age是Some(30)
+```
+
+可以看出在 `if let` 中，`=` 右边 `Some(i32)` 类型的 `age` 被左边 `i32` 类型的新 `age` 遮蔽了，该遮蔽一直持续到 `if let` 语句块的结束。因此第三个 `println!` 输出的 `age` 依然是 `Some(i32)` 类型。
+
+对于 `match` 类型也是如此:
+
+```rust
+fn main() {
+   let age = Some(30);
+   println!("在匹配前，age是{:?}",age);
+   match age {
+       Some(age) =>  println!("匹配出来的age是{}",age),
+       _ => ()
+   }
+   println!("在匹配后，age是{:?}",age);
+}
+```
+
+需要注意的是，**`match` 中的变量遮蔽其实不是那么的容易看出**，因此要小心！其实这里最好不要使用同名，避免难以理解，如下。
+
+```rust
+fn main() {
+   let age = Some(30);
+   println!("在匹配前，age是{:?}", age);
+   match age {
+       Some(x) =>  println!("匹配出来的age是{}", x),
+       _ => ()
+   }
+   println!("在匹配后，age是{:?}", age);
+}
+```
+
