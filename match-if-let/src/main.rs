@@ -1,9 +1,11 @@
 mod example;
 
+use std::vec;
+
 use example::{Action, Direction, IpAddr};
 
 fn main() {
-    let direction = Direction::West;
+    let direction = Direction::South;
     match direction {
         Direction::East => println!("Going East!"),
         Direction::North | Direction::South => println!("Going North or South!"),
@@ -37,4 +39,26 @@ fn main() {
             }
         }
     }
+
+    let some_value = Some(43u8);
+    if let Some(43) = some_value {
+        println!("Found the value 43!");
+    }
+
+    let v = vec![
+        Direction::East,
+        Direction::West,
+        Direction::North,
+        Direction::North,
+        Direction::South,
+    ];
+    let directions = v
+        .iter()
+        .filter(|x| matches!(x, Direction::East | Direction::North));
+    for direction in directions {
+        println!("Found direction: {:?}", direction);
+    }
+
+    let result = matches!(Some(40u8), Some(x) if x > 5);
+    println!("Result: {}", result);
 }
