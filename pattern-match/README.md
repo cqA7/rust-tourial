@@ -65,3 +65,55 @@ while let Some(top) = stack.pop() {
 
 #### for 循环
 
+```rust
+let v = vec!['a', 'b', 'c'];
+
+for (index, value) in v.iter().enumerate() {
+    println!("{} is at index {}", value, index);
+}
+```
+
+这里使用 `enumerate` 方法产生一个迭代器，该迭代器每次迭代会返回一个 `(索引，值)` 形式的元组，然后用 `(index,value)` 来匹配。
+
+#### let 语句
+
+```rust
+let PATTERN = EXPRESSION;
+```
+
+是的， 该语句我们已经用了无数次了，它也是一种模式匹配：
+
+```rust
+let x = 5;
+```
+
+这其中，`x` 也是一种模式绑定，代表将**匹配的值绑定到变量 x 上**。因此，在 Rust 中，**变量名也是一种模式**，只不过它比较朴素很不起眼罢了。
+
+```rust
+let (x, y, z) = (1, 2, 3);
+```
+
+上面将一个元组与模式进行匹配（**模式和值的类型必需相同！**），然后把 `1, 2, 3` 分别绑定到 `x, y, z` 上。
+
+模式匹配要求两边的类型必须相同，否则就会导致下面的报错：
+
+```rust
+let (x, y) = (1, 2, 3);
+```
+
+```rust
+error[E0308]: mismatched types
+ --> src/main.rs:4:5
+  |
+4 | let (x, y) = (1, 2, 3);
+  |     ^^^^^^   --------- this expression has type `({integer}, {integer}, {integer})`
+  |     |
+  |     expected a tuple with 3 elements, found one with 2 elements
+  |
+  = note: expected tuple `({integer}, {integer}, {integer})`
+             found tuple `(_, _)`
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `playground` due to previous error
+```
+
+对于元组来说，元素个数也是类型的一部分！

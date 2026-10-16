@@ -26,4 +26,11 @@ fn main() {
     while let Some(v) = stack.pop() {
         println!("Popped: {}", v);
     }
+
+    /* for in pattern */
+
+    let v = vec![1, 2, 3, 4];
+    for (index, value) in v.iter().enumerate() {
+        println!("{} is at index {}", value, index);
+    }
 }
